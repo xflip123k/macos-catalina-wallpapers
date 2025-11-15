@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tapety z macos catalina</title>
+    <title>Galeria zdjęć - Ciemny motyw</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #000; /* czarne tło */
+            color: #fff; /* biały tekst */
             margin: 0;
             padding: 20px;
         }
         h1 {
             text-align: center;
+            color: #fff;
         }
         .gallery {
             display: flex;
@@ -24,7 +26,7 @@
             width: 200px;
             height: auto;
             border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 6px rgba(255,255,255,0.2);
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -39,7 +41,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.9);
+            background-color: rgba(0,0,0,0.95); /* ciemniejsze tło */
             display: none;
             justify-content: center;
             align-items: center;
@@ -50,12 +52,17 @@
             max-width: 90%;
             max-height: 80%;
             margin-bottom: 20px;
+            border-radius: 8px;
         }
         #lightbox button {
             padding: 10px 20px;
             font-size: 16px;
             margin: 5px;
             cursor: pointer;
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
         }
         #lightbox .close {
             position: absolute;
@@ -64,13 +71,16 @@
             font-size: 30px;
             background: none;
             border: none;
-            color: white;
+            color: #fff;
             cursor: pointer;
+        }
+        #lightbox a button:hover {
+            background-color: #444;
         }
     </style>
 </head>
 <body>
-    <h1>tapety z macos catalina</h1>
+    <h1>Galeria zdjęć</h1>
     <div class="gallery" id="gallery"></div>
 
     <!-- Lightbox -->
@@ -79,7 +89,7 @@
         <img id="lightbox-img" src="" alt="Obrazek">
         <div>
             <a id="download-link" href="" download>
-                <button>download</button>
+                <button>Pobierz</button>
             </a>
         </div>
     </div>
@@ -123,4 +133,3 @@
     </script>
 </body>
 </html>
-
