@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeria zdjęć</title>
+    <title>tapety z macos catalina</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,18 +25,67 @@
             height: auto;
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
             transition: transform 0.2s;
         }
         .gallery img:hover {
             transform: scale(1.05);
         }
+
+        /* Lightbox */
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        #lightbox img {
+            max-width: 90%;
+            max-height: 80%;
+            margin-bottom: 20px;
+        }
+        #lightbox button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #lightbox .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h1>Galeria zdjęć</h1>
+    <h1>tapety z macos catalina</h1>
     <div class="gallery" id="gallery"></div>
 
+    <!-- Lightbox -->
+    <div id="lightbox">
+        <button class="close" onclick="closeLightbox()">&times;</button>
+        <img id="lightbox-img" src="" alt="Obrazek">
+        <div>
+            <a id="download-link" href="" download>
+                <button>download</button>
+            </a>
+        </div>
+    </div>
+
     <script>
+        // Wczytywanie listy obrazków z JSON
         fetch('images.json')
             .then(response => response.json())
             .then(images => {
@@ -45,10 +94,33 @@
                     const img = document.createElement('img');
                     img.src = 'images/' + file;
                     img.alt = file;
+                    img.onclick = () => openLightbox(img.src);
                     gallery.appendChild(img);
                 });
             })
             .catch(err => console.error('Błąd wczytywania obrazów:', err));
+
+        // Funkcje lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const downloadLink = document.getElementById('download-link');
+
+        function openLightbox(src) {
+            lightbox.style.display = 'flex';
+            lightboxImg.src = src;
+            downloadLink.href = src;
+        }
+
+        function closeLightbox() {
+            lightbox.style.display = 'none';
+            lightboxImg.src = '';
+        }
+
+        // Zamknięcie lightbox po kliknięciu poza obrazek
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
     </script>
 </body>
 </html>
+
