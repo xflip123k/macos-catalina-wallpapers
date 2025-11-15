@@ -3,30 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tapety z macos catalina:)</title>
+    <title>Galeria zdjęć - Ciemny motyw</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #000; /* czarne tło */
-            color: #fff; /* biały tekst */
+            background-color: #000;
+            color: #fff;
             margin: 0;
             padding: 20px;
         }
         h1 {
             text-align: center;
-            color: #fff;
+            margin-bottom: 20px;
         }
         .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 15px;
+            justify-items: center;
         }
         .gallery img {
-            width: 200px;
-            height: auto;
+            width: 100%;
+            max-width: 200px;
+            height: 200px;
+            object-fit: contain;
+            background-color: #111;
             border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(255,255,255,0.2);
+            box-shadow: 0 2px 6px rgba(255,255,255,0.15);
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -34,14 +37,13 @@
             transform: scale(1.05);
         }
 
-        /* Lightbox */
         #lightbox {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.95); /* ciemniejsze tło */
+            background-color: rgba(0,0,0,0.95);
             display: none;
             justify-content: center;
             align-items: center;
@@ -58,11 +60,14 @@
             padding: 10px 20px;
             font-size: 16px;
             margin: 5px;
-            cursor: pointer;
             background-color: #222;
             color: #fff;
             border: 1px solid #555;
             border-radius: 5px;
+            cursor: pointer;
+        }
+        #lightbox button:hover {
+            background-color: #444;
         }
         #lightbox .close {
             position: absolute;
@@ -74,19 +79,15 @@
             color: #fff;
             cursor: pointer;
         }
-        #lightbox a button:hover {
-            background-color: #444;
-        }
     </style>
 </head>
 <body>
-    <h1>tapety z macos catalina:)</h1>
+    <h1>Galeria zdjęć</h1>
     <div class="gallery" id="gallery"></div>
 
-    <!-- Lightbox -->
     <div id="lightbox">
         <button class="close" onclick="closeLightbox()">&times;</button>
-        <img id="lightbox-img" src="" alt="Obrazek">
+        <img id="lightbox-img" src="" alt="">
         <div>
             <a id="download-link" href="" download>
                 <button>Pobierz</button>
@@ -95,27 +96,32 @@
     </div>
 
     <script>
-        // Wczytywanie listy obrazków z JSON
+        let imagesList = [];
+        let currentIndex = -1;
+
         fetch('images.json')
             .then(response => response.json())
             .then(images => {
+                imagesList = images;
                 const gallery = document.getElementById('gallery');
-                images.forEach(file => {
+                images.forEach((file, index) => {
                     const img = document.createElement('img');
                     img.src = 'images/' + file;
                     img.alt = file;
-                    img.onclick = () => openLightbox(img.src);
+                    img.loading = 'lazy';
+                    img.onclick = () => openLightbox(index);
                     gallery.appendChild(img);
                 });
             })
             .catch(err => console.error('Błąd wczytywania obrazów:', err));
 
-        // Funkcje lightbox
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const downloadLink = document.getElementById('download-link');
 
-        function openLightbox(src) {
+        function openLightbox(index) {
+            currentIndex = index;
+            const src = 'images/' + imagesList[index];
             lightbox.style.display = 'flex';
             lightboxImg.src = src;
             downloadLink.href = src;
@@ -124,9 +130,22 @@
         function closeLightbox() {
             lightbox.style.display = 'none';
             lightboxImg.src = '';
+            currentIndex = -1;
         }
 
-        // Zamknięcie lightbox po kliknięciu poza obrazek
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.style.display !== 'flex') return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') navigate(1);
+            if (e.key === 'ArrowLeft') navigate(-1);
+        });
+
+        function navigate(step) {
+            if (currentIndex === -1) return;
+            currentIndex = (currentIndex + step + imagesList.length) % imagesList.length;
+            openLightbox(currentIndex);
+        }
+
         lightbox.addEventListener('click', (e) => {
             if (e.target === lightbox) closeLightbox();
         });
