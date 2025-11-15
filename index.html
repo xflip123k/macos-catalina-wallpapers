@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria zdjęć</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        .gallery img {
+            width: 200px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>Galeria zdjęć</h1>
+    <div class="gallery" id="gallery"></div>
+
+    <script>
+        fetch('images.json')
+            .then(response => response.json())
+            .then(images => {
+                const gallery = document.getElementById('gallery');
+                images.forEach(file => {
+                    const img = document.createElement('img');
+                    img.src = 'images/' + file;
+                    img.alt = file;
+                    gallery.appendChild(img);
+                });
+            })
+            .catch(err => console.error('Błąd wczytywania obrazów:', err));
+    </script>
+</body>
+</html>
